@@ -95,3 +95,22 @@ footer {
     margin-top: 2rem;
     font-weight: bold;
 }
+
+/* --- 自己紹介セクション用 --- */
+.profile {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 2.5rem;
+}
+
+.profile h2 {
+    border: none;
+    margin-top: 0;
+    padding-bottom: 0.5rem;
+}
+
+.profile p {
+    margin-bottom: 0;
+}
