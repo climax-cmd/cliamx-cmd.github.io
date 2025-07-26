@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>巡回セールスマン問題の解法について - 私の技術ブログ</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          }
+        };
+    </script>
+    <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    </head>
+<body>
+    <header>
+        <h1>私の技術ブログ</h1>
+    </header>
+
+    <main class="article-content">
+        <article>
+            <h2>巡回セールスマン問題の解法について</h2>
+
+            <p>
+                巡回セールスマン問題(TSP)は、全ての都市を一度ずつ訪問して出発点に戻ってくる最短経路を求める問題です。
+            </p>
+
+            <h3>ヘルドカープのアルゴリズム</h3>
+            <p>
+                これは動的計画法に基づく厳密解法です。
+                $C(S, j)$ を「出発都市から、都市の部分集合 $S$ をすべて経由し、最後に都市 $j \in S$ に到達する最短経路長」と定義します。
+                この部分問題は、以下の漸化式によって再帰的に解くことができます。
+            </p>
+            
+            <p>
+                $$
+                C(S, j) = \min_{k \in S \setminus \{j\}} \{C(S \setminus \{j\}, k) + d_{kj}\}
+                $$
+            </p>
+
+            <p>
+                ここで、$d_{kj}$ は都市kから都市jへの距離を表します。
+                この計算を、集合 $S$ のサイズを1からNまで大きくしながら進めることで、最終的な最適解を構築します。
+                計算量は $O(N^2 2^N)$ となります。
+            </p>
+        </article>
+
+        <a href="index.html" class="back-link">&laquo; 記事一覧に戻る</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 私のブログ</p>
+    </footer>
+</body>
+</html>
