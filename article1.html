@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>巡回セールスマン問題の解法について - 私の技術ブログ</title>
+    <title>巡回セールスマン問題とヘルドカープ法 - climaxのホームページ</title>
     <link rel="stylesheet" href="css/style.css">
     
     <script>
@@ -17,45 +17,131 @@
     <script id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
-    </head>
+    <style>
+        /* コードブロック用のスタイルを追加 */
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1em;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
 <body>
     <header>
-        <h1>私の技術ブログ</h1>
+        <h1>climaxのホームページ</h1>
     </header>
 
     <main class="article-content">
         <article>
-            <h2>巡回セールスマン問題の解法について</h2>
-
+            <h2>巡回セールスマン問題（TSP）とは</h2>
             <p>
-                巡回セールスマン問題(TSP)は、全ての都市を一度ずつ訪問して出発点に戻ってくる最短経路を求める問題です。
+                巡回セールスマン問題（Traveling Salesperson Problem, TSP）は、組合せ最適化問題の中でも特に有名な問題の一つです。
+                「複数の都市と、各都市間の移動コスト（距離や時間など）が与えられたとき、全ての都市をちょうど一度ずつ訪れて出発点に戻ってくるような移動経路（巡回路）のうち、総移動コストが最も小さいものを求める」という問題です。
+            </p>
+            <p>
+                都市の数が増えると、可能な巡回路の数は爆発的に増加（階乗で増加）するため、全ての経路を単純に計算して比較する方法（全探索）では、比較的少ない都市数でも現実的な時間内に解を見つけることが困難になります。
             </p>
 
-            <h3>ヘルドカープのアルゴリズム</h3>
+            <h3>ヘルド＝カープのアルゴリズム</h3>
             <p>
-                これは動的計画法に基づく厳密解法です。
-                $C(S, j)$ を「出発都市から、都市の部分集合 $S$ をすべて経由し、最後に都市 $j \in S$ に到達する最短経路長」と定義します。
+                ヘルド＝カープのアルゴリズムは、このTSPを厳密に解くためのアルゴリズムであり、**動的計画法（Dynamic Programming）**に基づいています。全探索よりも大幅に効率的です。
+            </p>
+            <p>
+                このアルゴリズムの核心は、問題をより小さな部分問題に分割して解き、その結果を再利用することにあります。具体的には、次のような部分問題を定義します。
+            </p>
+            <p>
+                $C(S, j)$ := 「出発都市（例:都市0）から、都市の部分集合 $S$ をすべて経由し、最後に都市 $j \in S$ に到達する最短経路長」
+            </p>
+            <p>
                 この部分問題は、以下の漸化式によって再帰的に解くことができます。
             </p>
             
-            <p>
-                $$
-                C(S, j) = \min_{k \in S \setminus \{j\}} \{C(S \setminus \{j\}, k) + d_{kj}\}
-                $$
-            </p>
-
+            $$
+            C(S, j) = \min_{k \in S \setminus \{j\}} \{C(S \setminus \{j\}, k) + d_{kj}\}
+            $$
+            
             <p>
                 ここで、$d_{kj}$ は都市kから都市jへの距離を表します。
-                この計算を、集合 $S$ のサイズを1からNまで大きくしながら進めることで、最終的な最適解を構築します。
-                計算量は $O(N^2 2^N)$ となります。
+                この計算を、訪問する都市の集合 $S$ のサイズを1からN（総都市数）まで大きくしながら進めることで、最終的な最適解を構築します。
+                計算量は $O(N^2 2^N)$ となり、全探索の $O(N!)$ と比較すると劇的に改善されますが、それでも $N$ が20～25を超えると計算が困難になるという課題は残ります。
             </p>
+
+            <h3>Pythonによる実装コード</h3>
+            <p>
+                以下に、ヘルド＝カープのアルゴリズムをPythonで実装したコードを示します。上記の漸化式を、ビット演算をうまく利用して表現しています。
+            </p>
+            <pre><code>import numpy as np
+
+def held_karp(dist_matrix: list[list[float]]) -> tuple[float, list[int]]:
+    """巡回セールスマン問題(TSP)をヘルド=カープのアルゴリズムで解きます。"""
+    n = len(dist_matrix)
+    if n == 0: return 0, []
+    if n == 1: return 0, [0]
+
+    # dp[mask][j]: 訪問済み都市の集合がmaskで、現在地がjのときの最短距離
+    # maskはビットで表現 (例: 0b1011は都市0,1,3を訪問済み)
+    dp = [[float('inf')] * n for _ in range(1 &lt;&lt; n)]
+    dp[1][0] = 0 # 出発点(都市0)から始まる
+
+    for mask in range(1, 1 &lt;&lt; n):
+        for j in range(n):
+            if (mask &gt;&gt; j) & 1: # jがmaskに含まれている場合
+                # jを訪問する直前の状態
+                prev_mask = mask ^ (1 &lt;&lt; j) 
+                if prev_mask == 0: continue
+                
+                # k -> j の遷移を考える
+                for k in range(n):
+                    if (prev_mask &gt;&gt; k) & 1: # kがprev_maskに含まれている場合
+                        cost = dp[prev_mask][k] + dist_matrix[k][j]
+                        if cost &lt; dp[mask][j]:
+                            dp[mask][j] = cost
+
+    # 全都市を訪問し、出発点に戻るコストを計算
+    final_mask = (1 &lt;&lt; n) - 1
+    min_tour_dist = float('inf')
+    last_city = -1
+    for j in range(1, n):
+        tour_dist = dp[final_mask][j] + dist_matrix[j][0]
+        if tour_dist &lt; min_tour_dist:
+            min_tour_dist = tour_dist
+            last_city = j
+
+    if last_city == -1: # n=2の場合など
+        if n > 1:
+            return dist_matrix[0][1] + dist_matrix[1][0], [0, 1]
+        return float('inf'), []
+
+    # 最短経路の復元
+    path, current_mask, current_city = [], final_mask, last_city
+    while current_city != 0:
+        path.append(current_city)
+        prev_mask = current_mask ^ (1 &lt;&lt; current_city)
+        
+        # どの都市kから来たかを逆算する
+        for k in range(n):
+            if (prev_mask &gt;&gt; k) & 1 and np.isclose(dp[current_mask][current_city], dp[prev_mask][k] + dist_matrix[k][current_city]):
+                current_mask, current_city = prev_mask, k
+                break
+    path.append(0)
+    path.reverse()
+    return min_tour_dist, path
+</code></pre>
+
         </article>
 
         <a href="index.html" class="back-link">&laquo; 記事一覧に戻る</a>
     </main>
 
     <footer>
-        <p>&copy; 2024 私のブログ</p>
+        <p>&copy; 2025 climaxのホームページ</p>
     </footer>
 </body>
 </html>
