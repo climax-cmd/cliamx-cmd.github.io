@@ -119,6 +119,7 @@ footer {
 }
 
 /* --- コードブロック用 --- */
+/*
 pre {
     background-color: #222; /* コードブロックの背景 */
     border: 1px solid #444;
@@ -132,3 +133,4 @@ code {
     font-family: 'Courier New', Courier, monospace;
     color: #d4d4d4; /* コードの文字色 */
 }
+/*
