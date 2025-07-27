@@ -6,6 +6,8 @@
     <title>焼きなまし法のマルコフ連鎖モデル - climaxのホームページ</title>
     <link rel="stylesheet" href="css/style.css">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
         MathJax = {
           tex: {
@@ -17,7 +19,7 @@
     <script id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
-    </head>
+</head>
 <body>
     <header>
         <h1>climaxのホームページ</h1>
@@ -37,95 +39,135 @@
                 <li>この方法はマルコフ過程によってモデリングでき大域的最適解が保証できます！(一般にヒューリスティック解法は解の保証がないものが多いです)。</li>
             </ul>
 
-            <h3>準備(マルコフ連鎖とは)</h3>
-            <ul>
-                <li>マルコフ過程のうち、状態が離散的(有限的)なものをマルコフ連鎖と呼びます。</li>
-                <li>オートマトンと非常に似た構造を持っています。</li>
-                <li>違いは遷移が確率によって起こるか、外部入力される文字によって起こるかです。</li>
-            </ul>
-
-            <h3>マルコフ連鎖の分類</h3>
-            <h4>斉時性と既約性</h4>
-            <ul>
-                <li><strong>斉時性:</strong> 状態の推移確率が時間に拠らず一定です (焼きなまし法では実際の推移する確率でないことに注意)。</li>
-                <li><strong>既約性:</strong> マルコフ連鎖の状態空間の任意の二状態が互いに到達可能です。</li>
-                <li>状態が互いに到達可能かは同値関係を満たし、状態集合はこの同値関係を使って直和分解できます。</li>
-            </ul>
-            <h4>非周期性</h4>
-            <ul>
-                <li><strong>非周期性:</strong> n回のステップで頂点iからjに到達できる確率を$P_{ij}^{(n)}$とします。(到達不可なら0)</li>
-                <li>状態iについて、 $A_i = \{ n \in \text{自然数} \mid P_{ii}^{(n)} > 0 \}$ としたとき、任意のiについて、$A_i$の要素の最大公約数が1ならばマルコフ連鎖は非周期性を満たします。</li>
-                <li>つまり、元に戻ってくるステップ数がある周期に縛られません。</li>
-            </ul>
-            
-            <h3>使用する定理</h3>
-            <ul>
-                <li><strong>命題 1.7.1.</strong> 次の条件 (1)-(3) は同値です。
-                    <ol>
-                        <li>マルコフ連鎖はエルゴード的である。</li>
-                        <li>マルコフ連鎖は斉時性を満たし、既約で、すべての状態は非周期的である。</li>
-                        <li>マルコフ連鎖は斉時性を満たし、既約で、非周期的な状態が存在する。</li>
-                    </ol>
-                </li>
-                <li><strong>定理 1.7.2.</strong> マルコフ連鎖がエルゴード的であるとき、定常分布 $\pi = \{\pi_j\}_{j \in S}$ が一意に存在し、十分なステップ数の後、遷移確率は定常分布に収束します。
-                    $$ \lim_{n \to \infty} p_{ij}^{(n)} = \pi_j, \quad i,j \in S $$
-                </li>
-                <li>つまり、マルコフ連鎖が有限、既約、斉時性、非周期性を満たすならば定常分布は唯一に定まります。</li>
-            </ul>
-
             <h3>焼きなまし法の定式化</h3>
             <ul>
                 <li>ある温度Tの時、状態 $i$ から $j$ への遷移確率を $P_{ij} = G_{ij} \cdot A_{ij}(T)$ とモデル化します。</li>
                 <li>$G_{ij}$ は状態 $j$ を候補として生成する確率、$A_{ij}(T)$ はその遷移を受理する確率です。</li>
                 <li>受理確率は $A_{ij}(T) = \min(1, \exp((E_i - E_j)/T))$ と定義されます。ここで $E_i$ は状態 $i$ のコストです。</li>
-                <li>この定式化は、解が改善すれば必ず遷移し、悪化する場合は温度が高いほど遷移しやすくなるという焼きなまし法のアイデアを反映しています。</li>
             </ul>
 
             <h3>ギブス分布と詳細つり合い条件</h3>
             <ul>
                 <li>焼きなまし法の定常分布は、統計力学における<strong>ギブス分布</strong>で与えられます。
-                    $$ \pi(s) = \frac{1}{Z(T)} \exp\left(-\frac{E(s)}{T}\right) $$
-                    $$ Z(T) = \sum_{x \in \Omega} \exp\left(-\frac{E(x)}{T}\right) $$
+                    $$ \pi_T(s) = \frac{1}{Z(T)} \exp\left(-\frac{E(s)}{T}\right) $$
+                    ここで、$Z(T) = \sum_{x \in \Omega} \exp(-\frac{E(x)}{T})$ は正規化定数（分配関数）です。
                 </li>
-                <li>この分布が定常分布であることは、詳細つり合い条件 $\pi(i)P_{ij} = \pi(j)P_{ji}$ を満たすことから証明できます。</li>
+                <li>この分布が定常分布であることは、**詳細つり合い条件**を満たすことから証明できます。この条件は、定常状態において状態$i$から$j$への確率的な流れと、$j$から$i$への流れが釣り合っていることを示すものです。
+                    $$ \pi(i)P_{ij} = \pi(j)P_{ji} $$
+                </li>
             </ul>
 
-            <h3>証明の概略</h3>
+            <h3>詳細つり合い条件の証明</h3>
             <p>
-                詳細つり合い条件と、受理確率 $A_{ij}(T)$ およびギブス分布 $\pi(s)$ の定義を組み合わせることで、以下の等式が導出されます。
-                $$ \frac{A_{ij}(T)}{A_{ji}(T)} = \frac{\pi(j)}{\pi(i)} = \exp\left(-\frac{E(j)-E(i)}{T}\right) $$
-                この関係は、$E(j) \le E(i)$（解の改善）と $E(j) > E(i)$（解の悪化）のどちらの場合でも成り立ちます。これにより、ギブス分布が確かに定常分布であることが示されます。
+                ギブス分布 $\pi(s)$ が詳細つり合い条件を満たすことを示します。
+                まず、遷移確率 $P_{ij} = G_{ij} A_{ij}(T)$ を代入し、多くのアルゴリズムで仮定される対称的な候補生成（$G_{ij} = G_{ji}$）を前提とすると、詳細つり合い条件は次のように単純化できます。
+            </p>
+            $$
+            \pi(i) A_{ij}(T) = \pi(j) A_{ji}(T) \iff \frac{A_{ij}(T)}{A_{ji}(T)} = \frac{\pi(j)}{\pi(i)}
+            $$
+            <p>
+                この式の右辺にギブス分布の定義を代入すると、以下のようになります。これが我々の目標値です。
+            </p>
+            $$
+            \frac{\pi(j)}{\pi(i)} = \frac{\exp(-E(j)/T) / Z(T)}{\exp(-E(i)/T) / Z(T)} = \exp\left(-\frac{E(j) - E(i)}{T}\right)
+            $$
+            <p>
+                次に、左辺の受理確率の比が、コストの関係によらず常にこの目標値と一致することを確認します。
+            </p>
+            
+            <h4>Case 1: $E(j) \le E(i)$ （解が改善、または同等の場合）</h4>
+            <p>
+                この場合、状態$i \to j$の遷移は常に受理され、逆の$j \to i$は確率的に受理されます。
+            </p>
+            <ul>
+                <li>$A_{ij}(T) = 1$</li>
+                <li>$A_{ji}(T) = \exp\left(-\frac{E(i) - E(j)}{T}\right)$</li>
+            </ul>
+            <p>したがって、比を計算すると、</p>
+            $$
+            \frac{A_{ij}(T)}{A_{ji}(T)} = \frac{1}{\exp\left(-\frac{E(i) - E(j)}{T}\right)} = \exp\left(\frac{E(i) - E(j)}{T}\right) = \exp\left(-\frac{E(j) - E(i)}{T}\right)
+            $$
+
+            <h4>Case 2: $E(j) > E(i)$ （解が悪化する場合）</h4>
+            <p>
+                この場合、状態$i \to j$の遷移は確率的に受理され、逆の$j \to i$は常に受理されます。
+            </p>
+            <ul>
+                <li>$A_{ij}(T) = \exp\left(-\frac{E(j) - E(i)}{T}\right)$</li>
+                <li>$A_{ji}(T) = 1$</li>
+            </ul>
+            <p>したがって、比を計算すると、</p>
+            $$
+            \frac{A_{ij}(T)}{A_{ji}(T)} = \frac{\exp\left(-\frac{E(j) - E(i)}{T}\right)}{1} = \exp\left(-\frac{E(j) - E(i)}{T}\right)
+            $$
+            <p>
+                いずれのケースでも、受理確率の比がギブス分布の比と一致することが示されました。これにより、ギブス分布は詳細つり合い条件を満たし、焼きなまし法マルコフ連鎖の一意な定常分布であることが証明されます。
+            </p>
+            
+            <h3>温度T→+0の極限</h3>
+            <p>
+                焼きなまし法の核心は、温度 $T$ を十分にゆっくりとゼロに近づけることで、探索を最適解に収束させることにあります。ここでは、その挙動を数式で確認します。
+            </p>
+            <p>
+                まず、計算のトリックとして、ギブス分布の分子・分母に $e^{E_{\min}/T}$ を掛け合わせます。ここで $E_{\min}$ は最適解のコスト（エネルギーの最小値）です。
+            </p>
+            $$
+            \pi_T(s) = \frac{\exp(-E(s)/T)}{\sum_{x \in \Omega} \exp(-E(x)/T)} = \frac{\exp\left(\frac{E_{\min} - E(s)}{T}\right)}{\sum_{x \in \Omega} \exp\left(\frac{E_{\min} - E(x)}{T}\right)}
+            $$
+            <p>
+                この式で、$T \to +0$ の極限を考えます。その際に重要となるのが、指数関数の以下の性質です。
+            </p>
+            $$
+            \lim_{T \to +0} e^{k/T} = 
+            \begin{cases}
+                \infty & (\text{if } k > 0) \\
+                1 & (\text{if } k = 0) \\
+                0 & (\text{if } k < 0)
+            \end{cases}
+            $$
+
+            <h4>分子の極限</h4>
+            <ul>
+                <li><b>もし $s$ が最適解（$s \in \{s^*\}$）ならば:</b><br>
+                    $E(s) = E_{\min}$ なので、$E_{\min} - E(s) = 0$ となります。
+                    したがって、分子は $e^0 = 1$ に収束します。
+                </li>
+                <li><b>もし $s$ が最適解でないならば:</b><br>
+                    $E(s) > E_{\min}$ なので、$E_{\min} - E(s)$ は負の定数です。
+                    したがって、分子は $e^{-\infty} = 0$ に収束します。
+                </li>
+            </ul>
+
+            <h4>分母の極限</h4>
+            <p>
+                分母は、全ての状態 $x$ についての和です。
+            </p>
+            <ul>
+                <li><b>$x$ が最適解の場合:</b> 上記と同様に、項は $1$ に収束します。</li>
+                <li><b>$x$ が最適解でない場合:</b> 項は $0$ に収束します。</li>
+            </ul>
+            <p>
+                結果として、分母の和は、最適解の個数ぶんの「1」の合計値に収束します。最適解の集合を $\{s^*\}$、その要素数を $|\{s^*\}|$ とすると、分母は $|\{s^*\}|$ に収束します。
             </p>
 
-            <h3>証明の成果</h3>
-            <ul>
-                <li>焼きなまし法をモデル化したマルコフ連鎖は、有限性、斉時性、既約性、非周期性を満たします。</li>
-                <li>これにより、このマルコフ連鎖はエルゴード的であり、一意な定常分布（ギブス分布）を持つことが保証されます。</li>
-            </ul>
-
-            <h3>温度Tが0に漸近すると... (結論)</h3>
-            <ul>
-                <li>温度 $T$ を限りなくゼロに近づける ($T \to +0$) と、ギブス分布はエネルギーが最小となる状態、つまり最適解の集合 $\{s^*\}$ 上にのみ確率を持つ分布に収束します。
-                    $$ \lim_{T \to +0} \pi(s) =
-                    \begin{cases}
-                        \frac{1}{|\{s^*\}|} & (\text{if } s \in \{s^*\}) \\
-                        0 & (\text{if } s \notin \{s^*\})
-                    </cases}
-                    $$
-                </li>
-                <li>これは、温度Tを十分にゆっくり下げることで、焼きなまし法が最終的に最適解へ到達できることの理論的な根拠となります。</li>
-                <li>$T_k = T_1 / \log k$ のような冷却スケジュールが、この収束を確率的に保証します。</li>
-            </ul>
+            <h4>結論</h4>
+            <p>
+                分子と分母の極限を組み合わせることで、最終的な分布の極限が求まります。
+            </p>
+            $$
+            \lim_{T \to +0} \pi_T(s) = 
+            \begin{cases}
+                \frac{1}{|\{s^*\}|} & (\text{if } s \in \{s^*\}) \\
+                0 & (\text{if } s \notin \{s^*\})
+            \end{cases}
+            $$
+            <p>
+                この結果は、温度がゼロに近づくにつれて、最適解以外の状態を取る確率がゼロになり、確率分布が最適解の集合上に均等に分布することを意味します。これが、焼きなまし法が理論的に最適解へ収束する根拠です。
+            </p>
 
             <hr>
             <h3>参考文献</h3>
-            <ul>
-                <li><a href="https://www.jstage.jst.go.jp/article/jjsai/9/3/9_365/_pdf" target="_blank" rel="noopener noreferrer">シミュレーテッドアニーリング ―基礎と最新技術― (PDF)</a></li>
-                <li><a href="https://s3.ap-northeast-1.amazonaws.com/wraptas-prod/pg-nakano-lab/aa48abe4-23a1-4b60-a438-43ce30f661ff.pdf" target="_blank" rel="noopener noreferrer">講義資料: 確率的最適化とマルコフ連鎖 (PDF)</a></li>
-                <li><a href="https://elsur.jpn.org/diary/2023/04/16/8468/" target="_blank" rel="noopener noreferrer">焼きなまし法（Simulated Annealing）の理論 - elsur.jpn.org</a></li>
-                <li><a href="https://yamakuramun.info/2021/04/18/380/" target="_blank" rel="noopener noreferrer">焼きなまし法の実装と解説 - yamakuramun.info</a></li>
-            </ul>
-        </article>
+            </article>
 
         <a href="index.html" class="back-link">&laquo; 記事一覧に戻る</a>
     </main>
@@ -133,5 +175,7 @@
     <footer>
         <p>&copy; 2025 climaxのホームページ</p>
     </footer>
+
+    <script>hljs.highlightAll();</script>
 </body>
 </html>
