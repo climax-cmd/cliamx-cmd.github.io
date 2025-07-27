@@ -50,7 +50,7 @@
             <ul>
                 <li>焼きなまし法の定常分布は、統計力学における<strong>ギブス分布</strong>で与えられます。
                     $$ \pi_T(s) = \frac{1}{Z(T)} \exp\left(-\frac{E(s)}{T}\right) $$
-                    ここで、$Z(T) = \sum_{x \in \Omega} \exp(-\frac{E(x)}{T})$ は正規化定数（分配関数）です。
+                    ここで、$Z(T) = \sum_{x \in \Omega} \exp(-E(x)/T)$ は正規化定数（分配関数）です。
                 </li>
                 <li>この分布が定常分布であることは、**詳細つり合い条件**を満たすことから証明できます。この条件は、定常状態において状態$i$から$j$への確率的な流れと、$j$から$i$への流れが釣り合っていることを示すものです。
                     $$ \pi(i)P_{ij} = \pi(j)P_{ji} $$
@@ -167,6 +167,12 @@
 
             <hr>
             <h3>参考文献</h3>
+            <ul>
+                <li><a href="https://www.jstage.jst.go.jp/article/jjsai/9/3/9_365/_pdf" target="_blank" rel="noopener noreferrer">シミュレーテッドアニーリング ―基礎と最新技術― (PDF)</a></li>
+                <li><a href="https://s3.ap-northeast-1.amazonaws.com/wraptas-prod/pg-nakano-lab/aa48abe4-23a1-4b60-a438-43ce30f661ff.pdf" target="_blank" rel="noopener noreferrer">講義資料: 確率的最適化とマルコフ連鎖 (PDF)</a></li>
+                <li><a href="https://elsur.jpn.org/diary/2023/04/16/8468/" target="_blank" rel="noopener noreferrer">焼きなまし法（Simulated Annealing）の理論 - elsur.jpn.org</a></li>
+                <li><a href="https://yamakuramun.info/2021/04/18/380/" target="_blank" rel="noopener noreferrer">焼きなまし法の実装と解説 - yamakuramun.info</a></li>
+            </ul>
             </article>
 
         <a href="index.html" class="back-link">&laquo; 記事一覧に戻る</a>
