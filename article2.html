@@ -8,6 +8,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
     <script>
         MathJax = {
           tex: {
@@ -104,6 +105,31 @@
                 いずれのケースでも、受理確率の比がギブス分布の比と一致することが示されました。これにより、ギブス分布は詳細つり合い条件を満たし、焼きなまし法マルコフ連鎖の一意な定常分布であることが証明されます。
             </p>
             
+            <h3>マルコフ連鎖の性質とエルゴード性</h3>
+            <p>
+                定常分布（ギブス分布）の存在が示された上で、その分布が一意であり、必ず収束することを保証するのが**エルゴード性**です。焼きなまし法をモデル化したマルコフ連鎖は、以下の性質を持つためエルゴード的であると言えます。
+            </p>
+            <ul>
+                <li>
+                    <strong>有限性:</strong>
+                    状態空間（解候補の集合）の要素数が有限であることを意味します。組合せ最適化問題では、解の総数は膨大であっても有限です。
+                </li>
+                <li>
+                    <strong>斉時性:</strong>
+                    遷移確率が時間ステップによらず一定であることを意味します。理論的な解析では温度Tを固定するため、遷移確率 $P_{ij}(T)$ は時間に依存せず、この性質を満たします。
+                </li>
+                <li>
+                    <strong>既約性:</strong>
+                    状態空間内のどの状態からでも、他の全ての状態へ有限ステップで到達可能であることを意味します。焼きなまし法では、近傍探索が全ての解を繋ぐように設計され、かつ受理確率が常に正であるため、この性質は保証されます。
+                </li>
+                <li>
+                    <strong>非周期性:</strong>
+                    ある状態に戻ってくるまでのステップ数が特定の周期に縛られないことを意味します。焼きなまし法では、遷移が受理されず同じ状態に留まる確率が常に正であるため、周期は1となり、非周期性が満たされます。
+                </li>
+            </ul>
+            <p>
+                以上の性質（有限、斉時的、既約、非周期的）を満たすため、焼きなまし法をモデル化したマルコフ連鎖はエルゴード的であり、ただ一つの定常分布（ギブス分布）に収束することが結論付けられます。
+            </p>
             <h3>温度T→+0の極限</h3>
             <p>
                 焼きなまし法の核心は、温度 $T$ を十分にゆっくりとゼロに近づけることで、探索を最適解に収束させることにあります。ここでは、その挙動を数式で確認します。
@@ -173,7 +199,8 @@
                 <li><a href="https://elsur.jpn.org/diary/2023/04/16/8468/" target="_blank" rel="noopener noreferrer">焼きなまし法（Simulated Annealing）の理論 - elsur.jpn.org</a></li>
                 <li><a href="https://yamakuramun.info/2021/04/18/380/" target="_blank" rel="noopener noreferrer">焼きなまし法の実装と解説 - yamakuramun.info</a></li>
             </ul>
-            </article>
+
+        </article>
 
         <a href="index.html" class="back-link">&laquo; 記事一覧に戻る</a>
     </main>
@@ -185,3 +212,9 @@
     <script>hljs.highlightAll();</script>
 </body>
 </html>
+
+
+
+
+
+
